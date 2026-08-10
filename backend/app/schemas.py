@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 from typing import Annotated, Literal, Optional
 
@@ -54,6 +54,43 @@ class TransactionCreate(BaseModel):
             description="Date on which the transaction occurred",
             examples=["2026-08-10"]
         )
+    ]
+
+class TransactionResponse(BaseModel):
+
+    id: Annotated[
+        int,
+        Field(description="Unique ID of the transaction")
+    ]
+
+    amount: Annotated[
+        Decimal,
+        Field(description="Amount of the transaction")
+    ]
+
+    category: Annotated[
+        str,
+        Field(description="Category of the transaction")
+    ]
+
+    type: Annotated[
+        Literal["income", "expense"],
+        Field(description="Type of the transaction")
+    ]
+
+    description: Annotated[
+        Optional[str],
+        Field(description="Description of the transaction")
+    ] = None
+
+    transaction_date: Annotated[
+        date,
+        Field(description="Date of the transaction")
+    ]
+
+    created_at: Annotated[
+        datetime,
+        Field(description="Time when the transaction was created")
     ]
 
 class TransactionUpdate(BaseModel):
