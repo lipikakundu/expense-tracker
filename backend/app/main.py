@@ -1,5 +1,6 @@
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 
 from . import models, schemas
 from .database import Base, engine, get_db
@@ -35,6 +36,32 @@ def get_transactions(db: Session = Depends(get_db)):
     transactions = db.query(models.Transaction).all()
 
     return transactions
+
+
+
+@app.get("/transactions/summary",response_model=schemas.TransactionSummary)
+def get_transaction_summary(
+    db: Session = Depends(get_db)
+):
+    total_income = (
+        db.query(func.coalesce(func.sum(models.Transaction.amount), 0))
+        .filter(models.Transaction.type == "income")
+        .scalar()
+    )
+
+    total_expense = (
+        db.query(func.coalesce(func.sum(models.Transaction.amount), 0))
+        .filter(models.Transaction.type == "expense")
+        .scalar()
+    )
+
+    balance = total_income - total_expense
+
+    return {
+        "total_income": total_income,
+        "total_expense": total_expense,
+        "balance": balance
+    }
 
 
 @app.get("/transactions/{transaction_id}",response_model=schemas.TransactionResponse)
@@ -102,3 +129,4 @@ def delete_transaction(transaction_id: int,db: Session = Depends(get_db)):
     return {
         "message": "Transaction deleted successfully"
     }
+

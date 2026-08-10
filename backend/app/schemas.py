@@ -140,3 +140,29 @@ class TransactionUpdate(BaseModel):
             description="Updated transaction date"
         )
     ]
+
+class TransactionSummary(BaseModel):
+
+    total_income: Annotated[
+        Decimal,
+        Field(
+            description="Total income from all transactions",
+            examples=[50000.00]
+        )
+    ]
+
+    total_expense: Annotated[
+        Decimal,
+        Field(
+            description="Total expenses from all transactions",
+            examples=[32000.00]
+        )
+    ]
+
+    balance: Annotated[
+        Decimal,
+        Field(
+            description="Current balance (income - expense)",
+            examples=[18000.00]
+        )
+    ]
