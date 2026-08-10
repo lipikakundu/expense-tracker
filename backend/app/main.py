@@ -1,7 +1,8 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
+from sqlalchemy.orm import Session
 
-from .database import Base, engine
-from . import models
+from . import models, schemas
+from .database import Base, engine, get_db
 
 Base.metadata.create_all(bind=engine)
 
@@ -11,3 +12,19 @@ app = FastAPI(title="Expense Tracker API")
 @app.get("/")
 def root():
     return {"message": "Expense Tracker API is running"}
+
+@app.post("/transactions")
+def create_transaction( transaction: schemas.TransactionCreate, db: Session = Depends(get_db) ):
+    new_transaction = models.Transaction(
+        amount=transaction.amount,
+        category=transaction.category,
+        type=transaction.type,
+        description=transaction.description,
+        transaction_date=transaction.transaction_date
+    )
+
+    db.add(new_transaction)
+    db.commit()
+    db.refresh(new_transaction)
+
+    return new_transaction
