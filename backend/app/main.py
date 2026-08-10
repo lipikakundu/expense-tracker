@@ -48,7 +48,35 @@ def get_transaction(transaction_id: int,db: Session = Depends(get_db)):
     if transaction is None:
         raise HTTPException(
             status_code=404,
-            detail="Transaction not found"
+            detail=f"Transaction with ID {transaction_id} not found"
         )
+
+    return transaction
+
+@app.put("/transactions/{transaction_id}",response_model=schemas.TransactionResponse)
+def update_transaction(
+    transaction_id: int,
+    transaction_data: schemas.TransactionUpdate,
+    db: Session = Depends(get_db)
+):
+    transaction = (
+        db.query(models.Transaction)
+        .filter(models.Transaction.id == transaction_id)
+        .first()
+    )
+
+    if transaction is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Transaction with ID {transaction_id} not found"
+        )
+
+    update_data = transaction_data.model_dump(exclude_unset=True)
+
+    for field, value in update_data.items():
+        setattr(transaction, field, value)
+
+    db.commit()
+    db.refresh(transaction)
 
     return transaction
