@@ -80,3 +80,25 @@ def update_transaction(
     db.refresh(transaction)
 
     return transaction
+
+
+@app.delete("/transactions/{transaction_id}")
+def delete_transaction(transaction_id: int,db: Session = Depends(get_db)):
+    transaction = (
+        db.query(models.Transaction)
+        .filter(models.Transaction.id == transaction_id)
+        .first()
+    )
+
+    if transaction is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Transaction with ID {transaction_id} not found"
+        )
+
+    db.delete(transaction)
+    db.commit()
+
+    return {
+        "message": "Transaction deleted successfully"
+    }
