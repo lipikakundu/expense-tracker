@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
 from . import models, schemas
@@ -35,3 +35,20 @@ def get_transactions(db: Session = Depends(get_db)):
     transactions = db.query(models.Transaction).all()
 
     return transactions
+
+
+@app.get("/transactions/{transaction_id}",response_model=schemas.TransactionResponse)
+def get_transaction(transaction_id: int,db: Session = Depends(get_db)):
+    transaction = (
+        db.query(models.Transaction)
+        .filter(models.Transaction.id == transaction_id)
+        .first()
+    )
+
+    if transaction is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Transaction not found"
+        )
+
+    return transaction
