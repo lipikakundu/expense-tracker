@@ -20,18 +20,18 @@
         <!-- Summary -->
         <section class="summary">
 
-            <div class="summary-card">
+            <div class="summary-card balance-card">
                 <h3>Balance</h3>
                 <p id="balance">₹0</p>
             </div>
 
-            <div class="summary-card">
-                <h3>Income</h3>
+            <div class="summary-card income-card">
+                <h3>Total Income</h3>
                 <p id="income">₹0</p>
             </div>
 
-            <div class="summary-card">
-                <h3>Expense</h3>
+            <div class="summary-card expense-card">
+                <h3>Total Expense</h3>
                 <p id="expense">₹0</p>
             </div>
 
@@ -45,40 +45,61 @@
 
             <form id="transactionForm">
 
-                <input
-                    type="number"
-                    id="amount"
-                    placeholder="Amount"
-                    step="0.01"
-                    required
-                >
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input
+                        type="number"
+                        id="amount"
+                        placeholder="Enter amount"
+                        step="0.01"
+                        min="0.01"
+                        required
+                    >
+                </div>
 
-                <input
-                    type="text"
-                    id="category"
-                    placeholder="Category"
-                    required
-                >
 
-                <select id="type" required>
-                    <option value="">Select Type</option>
-                    <option value="income">Income</option>
-                    <option value="expense">Expense</option>
-                </select>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <input
+                        type="text"
+                        id="category"
+                        placeholder="e.g. Food, Salary"
+                        required
+                    >
+                </div>
 
-                <input
-                    type="date"
-                    id="transactionDate"
-                    required
-                >
 
-                <input
-                    type="text"
-                    id="description"
-                    placeholder="Description"
-                >
+                <div class="form-group">
+                    <label for="type">Type</label>
+                    <select id="type" required>
+                        <option value="">Select type</option>
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                </div>
 
-                <button type="submit">
+
+                <div class="form-group">
+                    <label for="transactionDate">Date</label>
+                    <input
+                        type="date"
+                        id="transactionDate"
+                        required
+                    >
+                </div>
+
+
+                <div class="form-group description-group">
+                    <label for="description">Description</label>
+                    <input
+                        type="text"
+                        id="description"
+                        placeholder="Optional description"
+                    >
+                </div>
+
+
+                <button type="submit" class="add-button">
                     Add Transaction
                 </button>
 
@@ -90,10 +111,13 @@
         <!-- Transactions -->
         <section class="transactions">
 
-            <h2>Transactions</h2>
+            <div class="transactions-header">
+                <h2>Transactions</h2>
+                <span id="transactionCount">0 transactions</span>
+            </div>
 
             <div id="transactionList">
-                <!-- Transactions will be loaded here -->
+                <!-- Transactions are inserted by JavaScript -->
             </div>
 
         </section>
@@ -105,4 +129,5 @@
 
 </body>
 </html>
+
 

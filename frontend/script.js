@@ -50,6 +50,12 @@ async function loadTransactions() {
 
         const transactions = await response.json();
 
+        const transactionCount =
+            document.getElementById("transactionCount");
+
+        transactionCount.textContent =
+            `${transactions.length} transaction${transactions.length !== 1 ? "s" : ""}`;
+
         const transactionList =
             document.getElementById("transactionList");
 
@@ -67,19 +73,34 @@ async function loadTransactions() {
 
             item.className = "transaction-item";
 
-            item.innerHTML = `
-                <div class="transaction-info">
-                    <h4>${transaction.category}</h4>
-                    <p>
-                        ${transaction.description || "No description"}
-                        • ${transaction.transaction_date}
-                    </p>
-                </div>
+                    
+        item.innerHTML = `
+            <div class="transaction-info">
+                <h4>${transaction.category}</h4>
+
+                <p>
+                    ${transaction.description || "No description"}
+                    • ${transaction.transaction_date}
+                </p>
+            </div>
+
+            <div class="transaction-right">
 
                 <div class="transaction-amount">
                     ₹${transaction.amount}
                 </div>
-            `;
+
+                <button
+                    class="delete-button"
+                    onclick="deleteTransaction(${transaction.id})"
+                >
+                    Delete
+                </button>
+
+            </div>
+        `;
+
+
 
             transactionList.appendChild(item);
         });
@@ -155,3 +176,52 @@ document
             alert(`Failed to add transaction: ${error.message}`);
         }
     });
+
+
+// --------------------
+// Delete Transaction
+// --------------------
+
+async function deleteTransaction(transactionId) {
+
+    const confirmed = confirm(
+        "Are you sure you want to delete this transaction?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/transactions/${transactionId}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        if (!response.ok) {
+
+            const error = await response.json();
+
+            throw new Error(
+                error.detail || "Failed to delete transaction"
+            );
+        }
+
+        // Refresh the data after deletion
+        await loadSummary();
+        await loadTransactions();
+
+    } catch (error) {
+
+        console.error(
+            "Delete transaction error:",
+            error
+        );
+
+        alert(`Failed to delete transaction: ${error.message}`);
+    }
+}
+

@@ -7,18 +7,24 @@
 body {
     font-family: Arial, sans-serif;
     background: #f4f6f8;
-    color: #222;
+    color: #1f2937;
     min-height: 100vh;
 }
+
+
+/* --------------------
+   Header
+-------------------- */
 
 header {
     background: #1f2937;
     color: white;
     text-align: center;
-    padding: 30px 20px;
+    padding: 35px 20px;
 }
 
 header h1 {
+    font-size: 32px;
     margin-bottom: 8px;
 }
 
@@ -26,13 +32,21 @@ header p {
     color: #d1d5db;
 }
 
+
+/* --------------------
+   Main
+-------------------- */
+
 main {
     width: 90%;
     max-width: 1000px;
     margin: 30px auto;
 }
 
-/* Summary */
+
+/* --------------------
+   Summary
+-------------------- */
 
 .summary {
     display: grid;
@@ -51,6 +65,7 @@ main {
 
 .summary-card h3 {
     color: #6b7280;
+    font-size: 15px;
     margin-bottom: 10px;
 }
 
@@ -59,7 +74,22 @@ main {
     font-weight: bold;
 }
 
-/* Form */
+.balance-card p {
+    color: #2563eb;
+}
+
+.income-card p {
+    color: #16a34a;
+}
+
+.expense-card p {
+    color: #dc2626;
+}
+
+
+/* --------------------
+   Sections
+-------------------- */
 
 .transaction-form,
 .transactions {
@@ -75,47 +105,103 @@ main {
     margin-bottom: 20px;
 }
 
+
+/* --------------------
+   Form
+-------------------- */
+
 #transactionForm {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    gap: 18px;
 }
 
-#transactionForm input,
-#transactionForm select {
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #374151;
+}
+
+.form-group input,
+.form-group select {
     padding: 12px;
     border: 1px solid #d1d5db;
     border-radius: 6px;
     font-size: 15px;
+    outline: none;
 }
 
-#transactionForm button {
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #2563eb;
+}
+
+.description-group {
     grid-column: span 2;
-    padding: 12px;
+}
+
+.add-button {
+    grid-column: span 2;
+    padding: 13px;
     border: none;
     border-radius: 6px;
     background: #2563eb;
     color: white;
     font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
 }
 
-#transactionForm button:hover {
+.add-button:hover {
     background: #1d4ed8;
 }
 
-/* Transactions */
+
+/* --------------------
+   Transactions Header
+-------------------- */
+
+.transactions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.transactions-header h2 {
+    margin-bottom: 0;
+}
+
+#transactionCount {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+
+/* --------------------
+   Transaction Item
+-------------------- */
 
 .transaction-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
+    padding: 18px 5px;
     border-bottom: 1px solid #e5e7eb;
 }
 
+.transaction-item:last-child {
+    border-bottom: none;
+}
+
 .transaction-info h4 {
-    margin-bottom: 5px;
+    margin-bottom: 6px;
+    font-size: 16px;
 }
 
 .transaction-info p {
@@ -125,9 +211,19 @@ main {
 
 .transaction-amount {
     font-weight: bold;
+    font-size: 17px;
 }
 
+
+/* --------------------
+   Responsive
+-------------------- */
+
 @media (max-width: 700px) {
+
+    main {
+        width: 94%;
+    }
 
     .summary {
         grid-template-columns: 1fr;
@@ -137,7 +233,8 @@ main {
         grid-template-columns: 1fr;
     }
 
-    #transactionForm button {
+    .description-group,
+    .add-button {
         grid-column: span 1;
     }
 
@@ -146,4 +243,23 @@ main {
         align-items: flex-start;
         gap: 8px;
     }
+}
+
+.transaction-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.delete-button {
+    padding: 7px 12px;
+    border: none;
+    border-radius: 5px;
+    background: #dc2626;
+    color: white;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background: #b91c1c;
 }
