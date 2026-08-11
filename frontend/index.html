@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Expense Tracker</h1>
+        <p>Track your income and expenses</p>
+    </header>
+
+    <main>
+
+        <!-- Summary -->
+        <section class="summary">
+
+            <div class="summary-card">
+                <h3>Balance</h3>
+                <p id="balance">₹0</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>Income</h3>
+                <p id="income">₹0</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>Expense</h3>
+                <p id="expense">₹0</p>
+            </div>
+
+        </section>
+
+
+        <!-- Add Transaction -->
+        <section class="transaction-form">
+
+            <h2>Add Transaction</h2>
+
+            <form id="transactionForm">
+
+                <input
+                    type="number"
+                    id="amount"
+                    placeholder="Amount"
+                    step="0.01"
+                    required
+                >
+
+                <input
+                    type="text"
+                    id="category"
+                    placeholder="Category"
+                    required
+                >
+
+                <select id="type" required>
+                    <option value="">Select Type</option>
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
+                </select>
+
+                <input
+                    type="date"
+                    id="transactionDate"
+                    required
+                >
+
+                <input
+                    type="text"
+                    id="description"
+                    placeholder="Description"
+                >
+
+                <button type="submit">
+                    Add Transaction
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- Transactions -->
+        <section class="transactions">
+
+            <h2>Transactions</h2>
+
+            <div id="transactionList">
+                <!-- Transactions will be loaded here -->
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
+
