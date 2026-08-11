@@ -1,5 +1,7 @@
 const API_URL = "https://expense-tracker-api-0pg2.onrender.com";
 
+let editingTransactionId = null;
+
 // Load summary and transactions when page opens
 document.addEventListener("DOMContentLoaded", () => {
     loadSummary();
@@ -90,12 +92,23 @@ async function loadTransactions() {
                     ₹${transaction.amount}
                 </div>
 
-                <button
-                    class="delete-button"
-                    onclick="deleteTransaction(${transaction.id})"
-                >
-                    Delete
-                </button>
+                <div class="transaction-actions">
+
+                    <button
+                        class="edit-button"
+                        onclick="editTransaction(${transaction.id})"
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        class="delete-button"
+                        onclick="deleteTransaction(${transaction.id})"
+                    >
+                        Delete
+                    </button>
+
+                </div>
 
             </div>
         `;
@@ -140,42 +153,87 @@ document
         };
 
         try {
-            const response = await fetch(
-                `${API_URL}/transactions`,
-                {
-                    method: "POST",
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+            let response;
 
-                    body: JSON.stringify(transaction)
-                }
-            );
+            if (editingTransactionId === null) {
 
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(
-                    error.detail || "Failed to create transaction"
+                // --------------------
+                // Create
+                // --------------------
+
+                response = await fetch(
+                    `${API_URL}/transactions`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(transaction)
+                    }
+                );
+
+            } else {
+
+                // --------------------
+                // Update
+                // --------------------
+
+                response = await fetch(
+                    `${API_URL}/transactions/${editingTransactionId}`,
+                    {
+                        method: "PUT",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(transaction)
+                    }
                 );
             }
 
-            // Clear the form
+            if (!response.ok) {
+
+                const error = await response.json();
+
+                throw new Error(
+                    error.detail || "Request failed"
+                );
+            }
+
+            // Reset edit mode
+            editingTransactionId = null;
+
+            // Reset form
             document.getElementById("transactionForm").reset();
 
-            // Refresh the page data
+            // Restore form UI
+            document.querySelector(
+                ".transaction-form h2"
+            ).textContent = "Add Transaction";
+
+            document.querySelector(
+                ".add-button"
+            ).textContent = "Add Transaction";
+
+            // Refresh data
             await loadSummary();
             await loadTransactions();
 
         } catch (error) {
+
             console.error(
-                "Create transaction error:",
+                "Transaction error:",
                 error
             );
 
-            alert(`Failed to add transaction: ${error.message}`);
+            alert(`Operation failed: ${error.message}`);
         }
     });
+
 
 
 // --------------------
@@ -225,3 +283,68 @@ async function deleteTransaction(transactionId) {
     }
 }
 
+
+// --------------------
+// Edit Transaction
+// --------------------
+
+async function editTransaction(transactionId) {
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/transactions/${transactionId}`
+        );
+
+        if (!response.ok) {
+            const error = await response.json();
+
+            throw new Error(
+                error.detail || "Failed to fetch transaction"
+            );
+        }
+
+        const transaction = await response.json();
+
+        // Remember which transaction is being edited
+        editingTransactionId = transactionId;
+
+        // Fill the form with existing values
+        document.getElementById("amount").value =
+            transaction.amount;
+
+        document.getElementById("category").value =
+            transaction.category;
+
+        document.getElementById("type").value =
+            transaction.type;
+
+        document.getElementById("description").value =
+            transaction.description || "";
+
+        document.getElementById("transactionDate").value =
+            transaction.transaction_date;
+
+        // Change form heading
+        document.querySelector(".transaction-form h2").textContent =
+            "Edit Transaction";
+
+        // Change button text
+        document.querySelector(".add-button").textContent =
+            "Update Transaction";
+
+        // Scroll to form
+        document.querySelector(".transaction-form").scrollIntoView({
+            behavior: "smooth"
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Edit transaction error:",
+            error
+        );
+
+        alert(`Failed to load transaction: ${error.message}`);
+    }
+}
