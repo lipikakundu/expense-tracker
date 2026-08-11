@@ -1,6 +1,7 @@
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from fastapi.middleware.cors import CORSMiddleware
 
 from . import models, schemas
 from .database import Base, engine, get_db
@@ -8,6 +9,17 @@ from .database import Base, engine, get_db
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Expense Tracker API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
