@@ -88,3 +88,70 @@ async function loadTransactions() {
         console.error("Transaction error:", error);
     }
 }
+
+
+// --------------------
+// Add Transaction
+// --------------------
+
+document
+    .getElementById("transactionForm")
+    .addEventListener("submit", async function (event) {
+
+        event.preventDefault();
+
+        const transaction = {
+            amount: parseFloat(
+                document.getElementById("amount").value
+            ),
+
+            category:
+                document.getElementById("category").value,
+
+            type:
+                document.getElementById("type").value,
+
+            description:
+                document.getElementById("description").value,
+
+            transaction_date:
+                document.getElementById("transactionDate").value
+        };
+
+        try {
+            const response = await fetch(
+                `${API_URL}/transactions`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(transaction)
+                }
+            );
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(
+                    error.detail || "Failed to create transaction"
+                );
+            }
+
+            // Clear the form
+            document.getElementById("transactionForm").reset();
+
+            // Refresh the page data
+            await loadSummary();
+            await loadTransactions();
+
+        } catch (error) {
+            console.error(
+                "Create transaction error:",
+                error
+            );
+
+            alert(`Failed to add transaction: ${error.message}`);
+        }
+    });
